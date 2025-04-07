@@ -2,10 +2,10 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="Anchor Layout (Full Spacing Labels)", layout="centered")
-st.title("🔩 錨栓配置圖（單段距離標註 / 無編號）")
+st.set_page_config(page_title="Anchor Layout Final Fix", layout="centered")
+st.title("🔩 錨栓配置圖（視覺位置最終調整）")
 
-st.markdown("此版本已：✅移除錨栓編號、✅補上 Y 方向單段距離、✅修正 X 向箭頭與文字重疊問題。")
+st.markdown("✅ 統一標註垂直位置，✅ 避免文字碰撞箭頭，✅ 單段/總距離比例一致。")
 
 # 輸入
 st.sidebar.header("⚙️ 錨栓參數設定")
@@ -32,59 +32,64 @@ x_start = edge_left
 y_start = plate_height - edge_top
 
 # 畫底板
-plate = plt.Rectangle((0, 0), plate_width, plate_height, facecolor='lightgrey', edgecolor='black', linewidth=1.5)
+plate = plt.Rectangle((0, 0), plate_width, plate_height,
+                      facecolor='lightgrey', edgecolor='black', linewidth=1.5)
 ax.add_patch(plate)
 
-# 畫錨栓（無編號）
+# 畫錨栓
 for i in range(n_y):
     for j in range(n_x):
         x = x_start + j * spacing_x
         y = y_start - i * spacing_y
-        bolt = plt.Circle((x, y), anchor_radius, edgecolor='black', facecolor='white', hatch='////')
+        bolt = plt.Circle((x, y), anchor_radius,
+                          edgecolor='black', facecolor='white', hatch='////')
         ax.add_patch(bolt)
 
-# 單段 X spacing 標註（避免與總距離文字重疊）
+# 單段 X spacing 標註
 if n_x > 1:
-    y_ref = y_start - (n_y - 1) * spacing_y - 40
+    # 統一高度位置
+    y_spacing_label = y_start - (n_y - 1) * spacing_y - 40
     for j in range(n_x - 1):
         x0 = x_start + j * spacing_x
         x1 = x_start + (j + 1) * spacing_x
         x_mid = (x0 + x1) / 2
-        ax.annotate("", xy=(x0, y_ref), xytext=(x1, y_ref), arrowprops=dict(arrowstyle='<->'))
-        ax.text(x_mid, y_ref - 12, f"{spacing_x:.0f} mm", ha='center', fontsize=8)
+        ax.annotate("", xy=(x0, y_spacing_label), xytext=(x1, y_spacing_label),
+                    arrowprops=dict(arrowstyle='<->'))
+        ax.text(x_mid, y_spacing_label - 10, f"{spacing_x:.0f} mm", ha='center', fontsize=8)
 
-# 單段 Y spacing 標註
+# 單段 Y spacing 標註（靠右，統一間距）
 if n_y > 1:
-    x_ref = x_start + (n_x - 1) * spacing_x + 50
+    x_spacing_label = x_start + n_x * spacing_x + 20  # 靠右一點，但保持距離統一
     for i in range(n_y - 1):
         y0 = y_start - i * spacing_y
         y1 = y_start - (i + 1) * spacing_y
         y_mid = (y0 + y1) / 2
-        ax.annotate("", xy=(x_ref, y0), xytext=(x_ref, y1), arrowprops=dict(arrowstyle='<->'))
-        ax.text(x_ref + 12, y_mid, f"{spacing_y:.0f} mm", va='center', fontsize=8, rotation=90)
+        ax.annotate("", xy=(x_spacing_label, y0), xytext=(x_spacing_label, y1),
+                    arrowprops=dict(arrowstyle='<->'))
+        ax.text(x_spacing_label + 10, y_mid, f"{spacing_y:.0f} mm", va='center', fontsize=8, rotation=90)
 
-# 總 X 間距標註
+# 總 X spacing 標註
 if n_x > 1:
     x0 = x_start
     x1 = x_start + (n_x - 1) * spacing_x
-    y_annot = y_start - (n_y - 1) * spacing_y - 90
+    y_annot = y_spacing_label - 40
     total_x = x1 - x0
     ax.annotate("", xy=(x0, y_annot), xytext=(x1, y_annot), arrowprops=dict(arrowstyle='<->'))
-    ax.text((x0 + x1) / 2, y_annot - 12, f"{total_x:.0f} mm", ha='center', fontsize=10)
+    ax.text((x0 + x1) / 2, y_annot - 10, f"{total_x:.0f} mm", ha='center', fontsize=10)
 
-# 總 Y 間距標註
+# 總 Y spacing 標註
 if n_y > 1:
     y0 = y_start
     y1 = y_start - (n_y - 1) * spacing_y
-    x_annot = plate_width - 20
+    x_annot = x_spacing_label + 40
     total_y = y0 - y1
     ax.annotate("", xy=(x_annot, y0), xytext=(x_annot, y1), arrowprops=dict(arrowstyle='<->'))
-    ax.text(x_annot + 15, (y0 + y1) / 2, f"{total_y:.0f} mm", va='center', rotation=90)
+    ax.text(x_annot + 12, (y0 + y1) / 2, f"{total_y:.0f} mm", va='center', rotation=90)
 
 ax.set_aspect('equal')
-ax.set_xlim(-30, plate_width + 80)
+ax.set_xlim(-30, plate_width + 100)
 ax.set_ylim(-50, plate_height + 80)
 ax.axis('off')
 st.pyplot(fig)
 
-st.caption("※ 顯示 X / Y 每段 spacing 間距與總長，並移除編號以提升美觀。")
+st.caption("※ 所有尺寸標註位置已統一、避免重疊。整體比例、排版一致性最佳化。")
