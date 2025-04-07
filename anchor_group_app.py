@@ -51,18 +51,19 @@ corner_offset_top *= 10
 corner_offset_right *= 10
 corner_offset_bottom *= 10
 
-# 間距設定：用 cm 輸入
-x_spacing_input = st.sidebar.text_input("X 方向間距（cm）", "15,15,15")
-y_spacing_input = st.sidebar.text_input("Y 方向間距（cm）", "15,15")
+# 間距設定
+diameter = selected_data['螺栓直徑 (cm)'] * 10
+x_spacing_input = st.sidebar.text_input("X 方向間距（mm）", "150,150,150")
+y_spacing_input = st.sidebar.text_input("Y 方向間距（mm）", "150,150")
 
-def parse_spacing_cm_to_mm(input_str):
+def parse_spacing(input_str):
     try:
-        return [float(x.strip()) * 10 for x in input_str.split(",") if x.strip()]
+        return [float(x.strip()) for x in input_str.split(",") if x.strip()]
     except:
         return []
 
-x_spacings = parse_spacing_cm_to_mm(x_spacing_input)
-y_spacings = parse_spacing_cm_to_mm(y_spacing_input)
+x_spacings = parse_spacing(x_spacing_input)
+y_spacings = parse_spacing(y_spacing_input)
 n_x = len(x_spacings) + 1
 n_y = len(y_spacings) + 1
 
