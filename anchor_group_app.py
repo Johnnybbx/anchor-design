@@ -40,7 +40,7 @@ st.sidebar.write(f"非開裂 kc: {selected_data['非開裂 kc']}")
 st.sidebar.write(f"kcp: {selected_data['kcp']}")
 st.sidebar.write(f"τuncr (2500psi): {selected_data['τuncr (2500psi)']}")
 st.sidebar.write(f"τucr (2500psi): {selected_data['τucr (2500psi)']}")
-st.sidebar.write(f"Vsa(kgf): {selected_data['Vsa']}")
+st.sidebar.write(f"Vsa (kgf): {selected_data['Vsa']}")
 
 # 使用者參數：錨栓直徑、間距設定
 diameter = selected_data['螺栓直徑 (cm)'] * 10  # 改成 mm
