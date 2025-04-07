@@ -1,49 +1,71 @@
 
 import streamlit as st
 from math import sqrt, pow
+import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="Anchor Design", layout="centered")
-st.title("🔩 群錨錨栓設計計算工具（互動式配置）")
+st.title("🔩 群錨錨栓設計工具（圖形化配置）")
 
-st.markdown("透過下方控制元件，您可以互動式調整錨栓數量、間距與底板大小，系統將即時計算群錨總拉拔強度。")
+st.markdown("透過下方控制元件，設定錨栓數量、間距與直徑，並於右側圖形中直覺預覽真實比例配置與尺寸。")
 
-# 基本參數輸入
+# 側邊輸入區
 st.sidebar.header("⚙️ 基本參數設定")
-f_c = st.sidebar.number_input("混凝土強度 f'c (kgf/cm²)", min_value=100.0, max_value=1000.0, value=280.0)
-embed_depth = st.sidebar.number_input("錨栓埋入深度 hef (mm)", min_value=40.0, max_value=500.0, value=100.0)
-diameter = st.sidebar.number_input("錨栓直徑 d (mm)", min_value=6.0, max_value=50.0, value=12.0)
-safety_factor = st.sidebar.number_input("安全係數 γM", min_value=1.0, max_value=3.0, value=1.5)
+f_c = st.sidebar.number_input("混凝土強度 f'c (kgf/cm²)", 100.0, 1000.0, 280.0)
+embed_depth = st.sidebar.number_input("錨栓埋入深度 hef (mm)", 40.0, 500.0, 100.0)
+diameter = st.sidebar.number_input("錨栓直徑 d (mm)", 6.0, 50.0, 12.0)
+safety_factor = st.sidebar.number_input("安全係數 γM", 1.0, 3.0, 1.5)
 
-# 底板與錨栓配置 UI
-st.subheader("📐 錨栓群配置設定")
+st.sidebar.markdown("---")
+st.sidebar.header("📐 錨栓群配置設定")
 
-n_x = st.slider("橫向錨栓數量（X 方向）", min_value=1, max_value=10, value=2)
-n_y = st.slider("縱向錨栓數量（Y 方向）", min_value=1, max_value=10, value=2)
-anchor_spacing = st.slider("錨栓中心間距 s (mm)", min_value=50, max_value=500, value=150)
+n_x = st.sidebar.number_input("橫向錨栓數量（X 方向）", 1, 20, 3)
+n_y = st.sidebar.number_input("縱向錨栓數量（Y 方向）", 1, 20, 3)
+spacing_x = st.sidebar.number_input("X 方向間距 (mm)", 30, 1000, 150)
+spacing_y = st.sidebar.number_input("Y 方向間距 (mm)", 30, 1000, 150)
 
-plate_width = (n_x - 1) * anchor_spacing + 100  # 底板寬度預設多留邊緣
-plate_height = (n_y - 1) * anchor_spacing + 100
+# 底板大小估算
+plate_width = (n_x - 1) * spacing_x + 100
+plate_height = (n_y - 1) * spacing_y + 100
 
-st.write(f"🔲 自動計算底板尺寸：**{plate_width} mm × {plate_height} mm**")
-
-# 計算單錨栓拉拔強度
-phi_N_cb = 10 * pow(embed_depth, 1.5) * sqrt(f_c) / safety_factor  # 單位為 kgf
-
-# 群錨計算
+# 計算單支錨栓拉拔強度
+phi_N_cb = 10 * pow(embed_depth, 1.5) * sqrt(f_c) / safety_factor
 total_anchors = n_x * n_y
 total_capacity = phi_N_cb * total_anchors
 
-# 結果顯示
+# 顯示計算結果
 st.subheader("🧮 計算結果")
 st.write(f"🔹 單支錨栓拉拔強度：**{phi_N_cb:.2f} kgf**")
 st.write(f"🔹 錨栓總數：**{total_anchors} 支**")
 st.write(f"🔹 群錨總拉拔強度（未折減）：**{total_capacity:.2f} kgf**")
 
-# 底板簡易視覺化（文字）
-st.subheader("🔍 錨栓佈局預覽（示意）")
-grid = ""
-for _ in range(n_y):
-    grid += "🔘 " * n_x + "\n"
-st.text(grid)
+# 顯示圖形化配置
+st.subheader("🔍 錨栓佈局預覽（真實比例）")
 
-st.caption("※ 群錨效應尚未考慮折減因子，實際設計請參考規範。")
+fig, ax = plt.subplots()
+anchor_radius = diameter / 2
+
+for i in range(n_y):
+    for j in range(n_x):
+        x = j * spacing_x
+        y = -i * spacing_y  # 向下排列
+        circle = plt.Circle((x, y), anchor_radius, edgecolor='black', facecolor='lightgray')
+        ax.add_patch(circle)
+
+# 標註尺寸線（間距）
+if n_x > 1:
+    ax.annotate("", xy=(0, -spacing_y*(n_y-1)-30), xytext=((n_x-1)*spacing_x, -spacing_y*(n_y-1)-30),
+                arrowprops=dict(arrowstyle='<->'))
+    ax.text((n_x-1)*spacing_x/2, -spacing_y*(n_y-1)-50, f"{spacing_x} mm", ha='center')
+
+if n_y > 1:
+    ax.annotate("", xy=((n_x)*spacing_x+30, 0), xytext=((n_x)*spacing_x+30, -spacing_y*(n_y-1)),
+                arrowprops=dict(arrowstyle='<->'))
+    ax.text((n_x)*spacing_x+40, -spacing_y*(n_y-1)/2, f"{spacing_y} mm", va='center', rotation=90)
+
+ax.set_aspect('equal')
+ax.set_xlim(-50, (n_x-1)*spacing_x + 100)
+ax.set_ylim(-spacing_y*(n_y) - 100, 100)
+ax.axis('off')
+st.pyplot(fig)
+
+st.caption("※ 配置圖依照直徑與間距真實比例繪製。尚未納入群效應折減，請依規範進行詳細設計。")
