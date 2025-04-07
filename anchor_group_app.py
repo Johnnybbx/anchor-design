@@ -62,8 +62,8 @@ def parse_spacing(input_str):
     except:
         return []
 
-x_spacings = parse_spacing(x_spacing_input)
-y_spacings = parse_spacing(y_spacing_input)
+x_spacings = parse_spacing(x_spacing_input*10)
+y_spacings = parse_spacing(y_spacing_input*10)
 n_x = len(x_spacings) + 1
 n_y = len(y_spacings) + 1
 
