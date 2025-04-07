@@ -124,15 +124,17 @@ if len(x_coords) > 1:
         ax.annotate("", xy=(x0, y_spacing_line), xytext=(x1, y_spacing_line), arrowprops=dict(arrowstyle='<->'))
         ax.text(x_mid, y_spacing_line - label_text_offset, f"{x1 - x0:.0f} mm", ha='center', va='top', fontsize=label_fontsize)
 
-# 總距離 X（修正箭頭和標註的高度）
+# 總距離 X（修正箭頭顯示問題）
 if len(x_coords) > 1:
     x0 = x_coords[0]
     x1 = x_coords[-1]
-    y_total = y_spacing_line - 60  # 調整箭頭和標註的垂直位置，避免與單段間距標註重疊
+    y_total = y_spacing_line - 60  # 調整箭頭和標註的垂直位置
     total_x = x1 - x0
-    ax.annotate("", xy=(x0, y_total), xytext=(x1, y_total), arrowprops=dict(arrowstyle='<->'))
     
-    # 移動總距離標註，避免和單段間距標示重疊
+    # 修正箭頭繪製，確保箭頭顯示
+    ax.annotate("", xy=(x1, y_total), xytext=(x0, y_total), arrowprops=dict(arrowstyle='<->', lw=1.5))
+
+    # 顯示總距離標註，避免與單段間距標示重疊
     ax.text((x0 + x1) / 2, y_total - label_text_offset, f"{total_x:.0f} mm", ha='center', va='top', fontsize=9)
 
 # 單段 Y spacing 標註
