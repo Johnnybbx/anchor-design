@@ -45,26 +45,25 @@ corner_offset_top = st.sidebar.number_input("上邊距 (cm)", 2.5, 100.0, 5.0)
 corner_offset_right = st.sidebar.number_input("右邊距 (cm)", 2.5, 100.0, 5.0)
 corner_offset_bottom = st.sidebar.number_input("下邊距 (cm)", 2.5, 100.0, 5.0)
 
-# 轉換為 mm（內部計算使用）
+# 轉換為 mm
 corner_offset_left *= 10
 corner_offset_top *= 10
 corner_offset_right *= 10
 corner_offset_bottom *= 10
 
-# 間距設定
+# 間距設定（輸入 cm → 轉換成 mm）
 diameter = selected_data['螺栓直徑 (cm)'] * 10
 x_spacing_input = st.sidebar.text_input("X 方向間距（cm）", "15,15,15")
 y_spacing_input = st.sidebar.text_input("Y 方向間距（cm）", "15,15")
 
 def parse_spacing(input_str):
-    # 轉換為 mm
-    x_spacings = [x * 10 for x in parse_spacing(x_spacing_input)]
-    y_spacings = [y * 10 for y in parse_spacing(y_spacing_input)]
     try:
         return [float(x.strip()) for x in input_str.split(",") if x.strip()]
     except:
         return []
 
+x_spacings = [x * 10 for x in parse_spacing(x_spacing_input)]
+y_spacings = [y * 10 for y in parse_spacing(y_spacing_input)]
 n_x = len(x_spacings) + 1
 n_y = len(y_spacings) + 1
 
@@ -116,7 +115,7 @@ if len(x_coords) > 1:
         x0, x1 = x_coords[j], x_coords[j+1]
         x_mid = (x0 + x1) / 2
         ax.annotate("", xy=(x0, y_spacing_line), xytext=(x1, y_spacing_line), arrowprops=dict(arrowstyle='<->'))
-        ax.text(x_mid, y_spacing_line - label_text_offset, f"{x1 - x0:.0f} mm", ha='center', va='top', fontsize=label_fontsize)
+        ax.text(x_mid, y_spacing_line - label_text_offset, f"{(x1 - x0)/10:.1f} cm", ha='center', va='top', fontsize=label_fontsize)
 
 # 總距離 X
 if len(x_coords) > 1:
@@ -125,7 +124,7 @@ if len(x_coords) > 1:
     y_total = y_spacing_line - inter_label_gap
     total_x = x1 - x0
     ax.annotate("", xy=(x1, y_total), xytext=(x0, y_total), arrowprops=dict(arrowstyle='<->', lw=1.5))
-    ax.text((x0 + x1) / 2, y_total - label_text_offset, f"{total_x:.0f} mm", ha='center', va='top', fontsize=9)
+    ax.text((x0 + x1) / 2, y_total - label_text_offset, f"{total_x/10:.1f} cm", ha='center', va='top', fontsize=9)
 
 # 單段 Y spacing 標註
 if len(y_coords) > 1:
@@ -134,7 +133,7 @@ if len(y_coords) > 1:
         y0, y1 = y_coords[i], y_coords[i+1]
         y_mid = (y0 + y1) / 2
         ax.annotate("", xy=(x_spacing_line, y0), xytext=(x_spacing_line, y1), arrowprops=dict(arrowstyle='<->'))
-        ax.text(x_spacing_line + label_text_offset, y_mid, f"{y0 - y1:.0f} mm", va='center', fontsize=label_fontsize, rotation=90)
+        ax.text(x_spacing_line + label_text_offset, y_mid, f"{(y0 - y1)/10:.1f} cm", va='center', fontsize=label_fontsize, rotation=90)
 
 # 總距離 Y
 if len(y_coords) > 1:
@@ -143,10 +142,11 @@ if len(y_coords) > 1:
     x_total = x_spacing_line + 40
     total_y = y0 - y1
     ax.annotate("", xy=(x_total, y0), xytext=(x_total, y1), arrowprops=dict(arrowstyle='<->'))
-    ax.text(x_total + label_text_offset, (y0 + y1) / 2, f"{total_y:.0f} mm", va='center', rotation=90, fontsize=9)
+    ax.text(x_total + label_text_offset, (y0 + y1) / 2, f"{total_y/10:.1f} cm", va='center', rotation=90, fontsize=9)
 
 ax.set_aspect('equal')
 ax.set_xlim(0, plate_width + 100)
 ax.set_ylim(-100, plate_height + 100)
 ax.axis('off')
 st.pyplot(fig)
+
