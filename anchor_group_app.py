@@ -2,10 +2,10 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="Anchor Layout (X 向標註排距調整)", layout="centered")
-st.title("🔩 錨栓配置圖（X 向單段與總距離標註排距對齊 Y 向）")
+st.set_page_config(page_title="Anchor Layout (X 總距離文字下移)", layout="centered")
+st.title("🔩 錨栓配置圖（X 總距離標註往下調整）")
 
-st.markdown("此版本調整 X 向標註間距，使單段距離與總距離之間的上下排距與 Y 向一致。")
+st.markdown("此版本將 X 向總距離標註文字位置再往下調整，與 Y 向排距一致，看起來更舒服。")
 
 # 使用者參數
 st.sidebar.header("⚙️ 錨栓參數設定")
@@ -30,6 +30,7 @@ offset_spacing = 30  # 與錨栓距離
 inter_label_gap = 30  # 單段與總距離的排距
 label_fontsize = 7
 label_text_offset = 10
+extra_total_text_offset = 10  # 額外再往下移的距離
 
 fig, ax = plt.subplots()
 anchor_radius = diameter / 2
@@ -63,7 +64,7 @@ if n_x > 1:
         ax.text(x_mid, y_spacing_line - label_text_offset,
                 f"{spacing_x:.0f} mm", ha='center', va='top', fontsize=label_fontsize)
 
-# 總距離 X spacing（拉更遠一點，與單段排距拉開）
+# 總距離 X spacing（調整文字位置再往下拉一點）
 if n_x > 1:
     x0 = x_start
     x1 = x_start + (n_x - 1) * spacing_x
@@ -71,7 +72,7 @@ if n_x > 1:
     total_x = x1 - x0
     ax.annotate("", xy=(x0, y_total), xytext=(x1, y_total),
                 arrowprops=dict(arrowstyle='<->'))
-    ax.text((x0 + x1) / 2, y_total - label_text_offset,
+    ax.text((x0 + x1) / 2, y_total - label_text_offset - extra_total_text_offset,
             f"{total_x:.0f} mm", ha='center', va='top', fontsize=9)
 
 # Y 向單段 spacing（不動）
@@ -102,4 +103,4 @@ ax.set_ylim(-50, plate_height + 100)
 ax.axis('off')
 st.pyplot(fig)
 
-st.caption("※ X 向單段與總距離標註上下排距已加大，與 Y 向保持一致。")
+st.caption("※ X 向總距離標註文字位置下移，與 Y 向標註排距一致，避免視覺擁擠。")
