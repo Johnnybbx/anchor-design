@@ -2,10 +2,10 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="Anchor Layout (Custom Spacing)", layout="centered")
-st.title("🔩 錨栓配置圖（自訂 X / Y 間距 + 預設角落錨栓距離底版 25mm）")
+st.set_page_config(page_title="Anchor Layout (Custom Spacing + Plate Size)", layout="centered")
+st.title("🔩 錨栓配置圖（自訂 X / Y 間距 + 四個角落距邊 25mm + 自動底版大小）")
 
-st.markdown("此版本允許自訂 X / Y 方向的錨栓間距，並預設最角落錨栓距離底版邊緣 25mm，排版樣式不變，並即時更新圖形。")
+st.markdown("此版本讓四個角落的錨栓距離底版邊緣 25mm，並根據錨栓位置自動設置底版大小，排版樣式不變，並即時更新圖形。")
 
 # 使用者參數
 st.sidebar.header("⚙️ 錨栓參數設定")
@@ -30,13 +30,19 @@ n_y = len(y_spacings) + 1
 
 st.sidebar.write(f"X 錨栓數量：{n_x}，Y 錨栓數量：{n_y}")
 
-st.sidebar.header("🧱 底板設定")
-plate_width = st.sidebar.number_input("底板寬度 (mm)", 100, 3000, 600)
-plate_height = st.sidebar.number_input("底板高度 (mm)", 100, 3000, 600)
-
-st.sidebar.header("📏 錨栓邊距")
+# 預設邊距 25mm
+corner_offset = 25
+st.sidebar.header("📏 底版邊距（四角錨栓距邊 25mm）")
 edge_left = st.sidebar.number_input("左邊距 (mm)", 25, 1000, 50)
 edge_top = st.sidebar.number_input("上邊距 (mm)", 25, 1000, 50)
+
+# 計算底版大小
+plate_width = sum(x_spacings) + 2 * corner_offset
+plate_height = sum(y_spacings) + 2 * corner_offset
+
+# 顯示自動計算的底版大小
+st.sidebar.write(f"自動計算底版寬度：{plate_width:.0f} mm")
+st.sidebar.write(f"自動計算底版高度：{plate_height:.0f} mm")
 
 # 標註距離參數
 offset_spacing = 30
@@ -47,9 +53,9 @@ label_text_offset = 10
 fig, ax = plt.subplots()
 anchor_radius = diameter / 2
 
-# 座標起點（最角落錨栓預設為距邊緣 25mm）
-x_start = 25
-y_start = plate_height - 25
+# 座標起點（四角錨栓預設為距邊緣 25mm）
+x_start = corner_offset
+y_start = plate_height - corner_offset
 
 # 計算每個錨栓的座標（非等距）
 x_coords = [x_start]
@@ -112,4 +118,4 @@ ax.set_ylim(0, plate_height + 100)
 ax.axis('off')
 st.pyplot(fig)
 
-st.caption("※ 最角落錨栓預設與底版邊緣距離 25mm，其他錨栓可自訂間距，系統即時更新。")
+st.caption("※ 四個角落錨栓距邊緣 25mm，底版大小自動計算，排版樣式與既定一致。")
