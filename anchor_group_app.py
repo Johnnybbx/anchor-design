@@ -157,6 +157,6 @@ if len(y_coords) > 1:
 
 ax.set_aspect('equal')
 ax.set_xlim(0, plate_width + 100)
-ax.set_ylim(0, plate_height + 100)
+ax.set_ylim(-100, plate_height + 100)
 ax.axis('off')
 st.pyplot(fig)
