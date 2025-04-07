@@ -22,9 +22,9 @@ df_bolts = pd.DataFrame(bolt_data)
 
 # Streamlit 介面設置
 st.set_page_config(page_title="Anchor Layout (Fixed Spacing + Plate Size)", layout="centered")
-st.title("🔩 錨栓配置圖（自訂 X / Y 間距 + 四個角落距邊 25mm + 自動底版大小）")
+st.title("🔩 錨栓配置圖")
 
-st.markdown("此版本讓四個角落的錨栓距離底版邊緣 25mm，並根據錨栓位置自動設置底版大小，排版樣式不變，並即時更新圖形。")
+st.markdown("beta版")
 
 # 錨栓型號選擇
 st.sidebar.header("⚙️ 錨栓型號選擇")
