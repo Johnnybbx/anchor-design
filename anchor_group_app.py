@@ -2,10 +2,10 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="Anchor Layout (Adjusted Arrows)", layout="centered")
-st.title("🔩 錨栓配置圖（真實比例 + 內部尺寸標註）")
+st.set_page_config(page_title="Anchor Layout with Edge Offsets", layout="centered")
+st.title("🔩 錨栓配置工具（自訂邊距 + 真實比例）")
 
-st.markdown("本圖顯示錨栓於底板內的配置情形，含尺寸標註，並確保標註箭頭留在底板內部，不影響視覺。")
+st.markdown("手動設定錨栓與底板邊距，系統將依真實比例繪製底板與錨栓位置，並提供尺寸標註。")
 
 # 輸入參數
 st.sidebar.header("⚙️ 錨栓參數設定")
@@ -17,19 +17,20 @@ n_y = st.sidebar.number_input("縱向錨栓數量（Y 方向）", 1, 20, 2)
 spacing_x = st.sidebar.number_input("X 方向間距 (mm)", 30, 1000, 150)
 spacing_y = st.sidebar.number_input("Y 方向間距 (mm)", 30, 1000, 150)
 
-st.sidebar.header("🧱 底版設定")
+st.sidebar.header("🧱 底板設定")
 plate_width = st.sidebar.number_input("底版寬度 (mm)", 100, 3000, 500)
 plate_height = st.sidebar.number_input("底版高度 (mm)", 100, 3000, 400)
 
-# 配置計算
+st.sidebar.header("📏 錨栓邊距")
+edge_left = st.sidebar.number_input("左邊距 (mm)", 0, 1000, 50)
+edge_top = st.sidebar.number_input("上邊距 (mm)", 0, 1000, 50)
+
+# 計算配置起點
 fig, ax = plt.subplots()
 anchor_radius = diameter / 2
-total_width = (n_x - 1) * spacing_x
-total_height = (n_y - 1) * spacing_y
 
-# 錨栓起始點，置中排列
-x_start = (plate_width - total_width) / 2
-y_start = (plate_height - total_height) / 2
+x_start = edge_left
+y_start = plate_height - edge_top  # 從上往下排
 
 # 畫底板
 plate = plt.Rectangle((0, 0), plate_width, plate_height, facecolor='lightgrey', edgecolor='black', linewidth=1.5)
@@ -43,20 +44,16 @@ for i in range(n_y):
         bolt = plt.Circle((x, y), anchor_radius, edgecolor='black', facecolor='white', hatch='////')
         ax.add_patch(bolt)
 
-# 修正標註位置：放在底板內側
-text_offset = 20
-arrow_margin = 30
-
-# X 方向間距標註（底板內下方）
+# 標註 X 間距（底板內下方）
 if n_x > 1:
     x0 = x_start
     x1 = x_start + (n_x - 1) * spacing_x
     y_annot = 20
     ax.annotate("", xy=(x0, y_annot), xytext=(x1, y_annot),
                 arrowprops=dict(arrowstyle='<->'))
-    ax.text((x0 + x1) / 2, y_annot + text_offset, f"{spacing_x} mm", ha='center')
+    ax.text((x0 + x1) / 2, y_annot + 15, f"{spacing_x} mm", ha='center')
 
-# Y 方向間距標註（底板內右側）
+# 標註 Y 間距（底板內右側）
 if n_y > 1:
     y0 = y_start
     y1 = y_start - (n_y - 1) * spacing_y
@@ -71,4 +68,4 @@ ax.set_ylim(-30, plate_height + 50)
 ax.axis('off')
 st.pyplot(fig)
 
-st.caption("※ 錨栓配置與標註已優化。尺寸標註位於底板內側，避免穿出外部。")
+st.caption("※ 錨栓位置由左與上邊距控制，避免自動置中誤差。所有繪圖元素依真實比例呈現。")
