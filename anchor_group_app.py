@@ -38,8 +38,8 @@ st.sidebar.write(f"有效埋深 (cm): {selected_data['有效埋深 (cm)']}")
 st.sidebar.write(f"開裂 kc: {selected_data['開裂 kc']}")
 st.sidebar.write(f"非開裂 kc: {selected_data['非開裂 kc']}")
 st.sidebar.write(f"kcp: {selected_data['kcp']}")
-st.sidebar.write(f"τuncr (2500psi): {selected_data['τuncr (2500psi)']}")
-st.sidebar.write(f"τucr (2500psi): {selected_data['τucr (2500psi)']}")
+st.sidebar.write(f"τuncr (kgf/cm2): {selected_data['τuncr (2500psi)']}")
+st.sidebar.write(f"τucr (kgf/cm2): {selected_data['τucr (2500psi)']}")
 st.sidebar.write(f"Vsa (kgf): {selected_data['Vsa']}")
 
 # 可調的四個角落邊距參數
