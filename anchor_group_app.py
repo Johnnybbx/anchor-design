@@ -42,6 +42,13 @@ st.sidebar.write(f"τuncr (2500psi): {selected_data['τuncr (2500psi)']}")
 st.sidebar.write(f"τucr (2500psi): {selected_data['τucr (2500psi)']}")
 st.sidebar.write(f"Vsa (kgf): {selected_data['Vsa']}")
 
+# 可調的四個角落邊距參數
+st.sidebar.header("📏 四角邊距設定")
+corner_offset_left = st.sidebar.number_input("左下角距邊距 (mm)", 25, 1000, 50)
+corner_offset_top = st.sidebar.number_input("左上角距邊距 (mm)", 25, 1000, 50)
+corner_offset_right = st.sidebar.number_input("右下角距邊距 (mm)", 25, 1000, 50)
+corner_offset_bottom = st.sidebar.number_input("右上角距邊距 (mm)", 25, 1000, 50)
+
 # 使用者參數：錨栓直徑、間距設定
 diameter = selected_data['螺栓直徑 (cm)'] * 10  # 改成 mm
 x_spacing_input = st.sidebar.text_input("X 方向間距（mm）", "150,150,150")
@@ -67,8 +74,8 @@ edge_left = st.sidebar.number_input("左邊距 (mm)", 25, 1000, 50)
 edge_top = st.sidebar.number_input("上邊距 (mm)", 25, 1000, 50)
 
 # 計算底版大小
-plate_width = sum(x_spacings) + 2 * corner_offset
-plate_height = sum(y_spacings) + 2 * corner_offset
+plate_width = sum(x_spacings) + corner_offset_left + corner_offset_right
+plate_height = sum(y_spacings) + corner_offset_top + corner_offset_bottom
 
 # 顯示自動計算的底版大小
 st.sidebar.write(f"自動計算底版寬度：{plate_width:.0f} mm")
@@ -83,9 +90,9 @@ label_text_offset = 10
 fig, ax = plt.subplots()
 anchor_radius = diameter / 2
 
-# 座標起點（四角錨栓預設為距邊緣 25mm）
-x_start = corner_offset
-y_start = plate_height - corner_offset
+# 座標起點（根據四個角落的錨栓距離進行調整）
+x_start = corner_offset_left
+y_start = plate_height - corner_offset_top
 
 # 計算每個錨栓的座標（非等距）
 x_coords = [x_start]
