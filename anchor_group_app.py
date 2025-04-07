@@ -44,10 +44,10 @@ st.sidebar.write(f"Vsa (kgf): {selected_data['Vsa']}")
 
 # 可調的四個角落邊距參數
 st.sidebar.header("📏 四角邊距設定")
-corner_offset_left = st.sidebar.number_input("左下角距邊距 (mm)", 25, 1000, 50)
-corner_offset_top = st.sidebar.number_input("左上角距邊距 (mm)", 25, 1000, 50)
-corner_offset_right = st.sidebar.number_input("右下角距邊距 (mm)", 25, 1000, 50)
-corner_offset_bottom = st.sidebar.number_input("右上角距邊距 (mm)", 25, 1000, 50)
+corner_offset_left = st.sidebar.number_input("左邊距 (mm)", 25, 1000, 50)
+corner_offset_top = st.sidebar.number_input("上邊距 (mm)", 25, 1000, 50)
+corner_offset_right = st.sidebar.number_input("右邊距 (mm)", 25, 1000, 50)
+corner_offset_bottom = st.sidebar.number_input("下距邊距 (mm)", 25, 1000, 50)
 
 # 使用者參數：錨栓直徑、間距設定
 diameter = selected_data['螺栓直徑 (cm)'] * 10  # 改成 mm
