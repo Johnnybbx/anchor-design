@@ -19,76 +19,76 @@ bolt_data = {
 
 df_bolts = pd.DataFrame(bolt_data)
 
-# Streamlit 介面設置
-st.set_page_config(page_title="Anchor Layout (Fixed Spacing + Plate Size)", layout="centered")
+st.set_page_config(page_title="Anchor Layout", layout="centered")
 st.title("🔩 錨栓配置圖")
-
 st.markdown("beta版")
 
 # 錨栓型號選擇
 st.sidebar.header("⚙️ 錨栓型號選擇")
 selected_bolt = st.sidebar.selectbox("選擇錨栓型號", df_bolts['型號'])
-
-# 顯示選擇的錨栓型號對應參數
 selected_data = df_bolts[df_bolts['型號'] == selected_bolt].iloc[0]
+
 st.sidebar.subheader(f"選擇的錨栓型號：{selected_bolt}")
 st.sidebar.write(f"螺栓直徑 (cm): {selected_data['螺栓直徑 (cm)']}")
 st.sidebar.write(f"有效埋深 (cm): {selected_data['有效埋深 (cm)']}")
 st.sidebar.write(f"開裂 kc: {selected_data['開裂 kc']}")
 st.sidebar.write(f"非開裂 kc: {selected_data['非開裂 kc']}")
 st.sidebar.write(f"kcp: {selected_data['kcp']}")
-st.sidebar.write(f"τuncr (kgf/cm2): {selected_data['τuncr (2500psi)']}")
-st.sidebar.write(f"τucr (kgf/cm2): {selected_data['τucr (2500psi)']}")
+st.sidebar.write(f"τuncr (kgf/cm²): {selected_data['τuncr (2500psi)']}")
+st.sidebar.write(f"τucr (kgf/cm²): {selected_data['τucr (2500psi)']}")
 st.sidebar.write(f"Vsa (kgf): {selected_data['Vsa']}")
 
-# 可調的四個角落邊距參數
+# 四角邊距設定（單位：cm）
 st.sidebar.header("📏 四角邊距設定")
-corner_offset_left = st.sidebar.number_input("左邊距 (mm)", 25, 1000, 50)
-corner_offset_top = st.sidebar.number_input("上邊距 (mm)", 25, 1000, 50)
-corner_offset_right = st.sidebar.number_input("右邊距 (mm)", 25, 1000, 50)
-corner_offset_bottom = st.sidebar.number_input("下距邊距 (mm)", 25, 1000, 50)
+corner_offset_left = st.sidebar.number_input("左邊距 (cm)", 2.5, 100.0, 5.0)
+corner_offset_top = st.sidebar.number_input("上邊距 (cm)", 2.5, 100.0, 5.0)
+corner_offset_right = st.sidebar.number_input("右邊距 (cm)", 2.5, 100.0, 5.0)
+corner_offset_bottom = st.sidebar.number_input("下邊距 (cm)", 2.5, 100.0, 5.0)
 
-# 使用者參數：錨栓直徑、間距設定
-diameter = selected_data['螺栓直徑 (cm)'] * 10  # 改成 mm
-x_spacing_input = st.sidebar.text_input("X 方向間距（mm）", "150,150,150")
-y_spacing_input = st.sidebar.text_input("Y 方向間距（mm）", "150,150")
+# 轉換為 mm（內部計算使用）
+corner_offset_left *= 10
+corner_offset_top *= 10
+corner_offset_right *= 10
+corner_offset_bottom *= 10
 
-# 轉換字串為數值陣列
-def parse_spacing(input_str):
+# 間距設定：用 cm 輸入
+x_spacing_input = st.sidebar.text_input("X 方向間距（cm）", "15,15,15")
+y_spacing_input = st.sidebar.text_input("Y 方向間距（cm）", "15,15")
+
+def parse_spacing_cm_to_mm(input_str):
     try:
-        return [float(x.strip()) for x in input_str.split(",") if x.strip()]
+        return [float(x.strip()) * 10 for x in input_str.split(",") if x.strip()]
     except:
         return []
 
-x_spacings = parse_spacing(x_spacing_input)
-y_spacings = parse_spacing(y_spacing_input)
+x_spacings = parse_spacing_cm_to_mm(x_spacing_input)
+y_spacings = parse_spacing_cm_to_mm(y_spacing_input)
 n_x = len(x_spacings) + 1
 n_y = len(y_spacings) + 1
 
 st.sidebar.write(f"X 錨栓數量：{n_x}，Y 錨栓數量：{n_y}")
 
-# 計算底版大小
+# 自動計算底板尺寸
 plate_width = sum(x_spacings) + corner_offset_left + corner_offset_right
 plate_height = sum(y_spacings) + corner_offset_top + corner_offset_bottom
 
-# 顯示自動計算的底版大小
-st.sidebar.write(f"自動計算底版寬度：{plate_width:.0f} mm")
-st.sidebar.write(f"自動計算底版高度：{plate_height:.0f} mm")
+st.sidebar.write(f"自動計算底版寬度：{plate_width / 10:.1f} cm")
+st.sidebar.write(f"自動計算底版高度：{plate_height / 10:.1f} cm")
 
-# 畫圖設置
+# 畫圖設定
 offset_spacing = 30
-inter_label_gap = 40  # 單段與總距離的排距
 label_fontsize = 7
 label_text_offset = 10
+inter_label_gap = 40
 
 fig, ax = plt.subplots()
 anchor_radius = diameter / 2
 
-# 座標起點（根據四個角落的錨栓距離進行調整）
+# 起始點
 x_start = corner_offset_left
 y_start = plate_height - corner_offset_top
 
-# 計算每個錨栓的座標（非等距）
+# 計算錨栓座標
 x_coords = [x_start]
 for s in x_spacings:
     x_coords.append(x_coords[-1] + s)
@@ -107,13 +107,6 @@ for y in y_coords:
         bolt = plt.Circle((x, y), anchor_radius, edgecolor='black', facecolor='white', hatch='////')
         ax.add_patch(bolt)
 
-# 標註距離參數
-offset_spacing = 30
-inter_label_gap = 40  # 單段與總距離的排距
-label_fontsize = 7
-label_text_offset = 10
-
-# X方向、Y方向間距標註
 # 單段 X spacing 標註
 if len(x_coords) > 1:
     y_spacing_line = y_coords[-1] - offset_spacing
@@ -123,17 +116,13 @@ if len(x_coords) > 1:
         ax.annotate("", xy=(x0, y_spacing_line), xytext=(x1, y_spacing_line), arrowprops=dict(arrowstyle='<->'))
         ax.text(x_mid, y_spacing_line - label_text_offset, f"{x1 - x0:.0f} mm", ha='center', va='top', fontsize=label_fontsize)
 
-# 總距離 X（修正箭頭顯示問題）
+# 總距離 X
 if len(x_coords) > 1:
     x0 = x_coords[0]
     x1 = x_coords[-1]
-    y_total = y_spacing_line - 40  # 調整箭頭和標註的垂直位置
+    y_total = y_spacing_line - inter_label_gap
     total_x = x1 - x0
-    
-    # 修正箭頭繪製，確保箭頭顯示
     ax.annotate("", xy=(x1, y_total), xytext=(x0, y_total), arrowprops=dict(arrowstyle='<->', lw=1.5))
-
-    # 顯示總距離標註，避免與單段間距標示重疊
     ax.text((x0 + x1) / 2, y_total - label_text_offset, f"{total_x:.0f} mm", ha='center', va='top', fontsize=9)
 
 # 單段 Y spacing 標註
