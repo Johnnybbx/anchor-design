@@ -53,8 +53,8 @@ corner_offset_bottom *= 10
 
 # 間距設定
 diameter = selected_data['螺栓直徑 (cm)'] * 10
-x_spacing_input = st.sidebar.text_input("X 方向間距（mm）", "150,150,150")
-y_spacing_input = st.sidebar.text_input("Y 方向間距（mm）", "150,150")
+x_spacing_input = st.sidebar.text_input("X 方向間距（cm）", "15,15,15")
+y_spacing_input = st.sidebar.text_input("Y 方向間距（cm）", "15,15")
 
 def parse_spacing(input_str):
     try:
