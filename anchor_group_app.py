@@ -68,11 +68,6 @@ n_y = len(y_spacings) + 1
 
 st.sidebar.write(f"X 錨栓數量：{n_x}，Y 錨栓數量：{n_y}")
 
-# 預設邊距 25mm
-corner_offset = 25
-edge_left = st.sidebar.number_input("左邊距 (mm)", 25, 1000, 50)
-edge_top = st.sidebar.number_input("上邊距 (mm)", 25, 1000, 50)
-
 # 計算底版大小
 plate_width = sum(x_spacings) + corner_offset_left + corner_offset_right
 plate_height = sum(y_spacings) + corner_offset_top + corner_offset_bottom
