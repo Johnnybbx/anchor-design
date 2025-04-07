@@ -159,5 +159,3 @@ ax.set_xlim(0, plate_width + 100)
 ax.set_ylim(-100, plate_height + 100)
 ax.axis('off')
 st.pyplot(fig)
-
-幫我把上面錨栓相關長度都由mm轉成cm
