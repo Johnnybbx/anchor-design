@@ -1,4 +1,3 @@
-
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -44,15 +43,15 @@ st.sidebar.write(f"Vsa (kgf): {selected_data['Vsa']}")
 
 # 可調的四個角落邊距參數
 st.sidebar.header("📏 四角邊距設定")
-corner_offset_left = st.sidebar.number_input("左邊距 (cm)", 250, 1000, 50)
-corner_offset_top = st.sidebar.number_input("上邊距 (cm)", 250, 1000, 50)
-corner_offset_right = st.sidebar.number_input("右邊距 (cm)", 250, 1000, 50)
-corner_offset_bottom = st.sidebar.number_input("下距邊距 (cm)", 250, 1000, 50)
+corner_offset_left = st.sidebar.number_input("左邊距 (mm)", 25, 1000, 50)
+corner_offset_top = st.sidebar.number_input("上邊距 (mm)", 25, 1000, 50)
+corner_offset_right = st.sidebar.number_input("右邊距 (mm)", 25, 1000, 50)
+corner_offset_bottom = st.sidebar.number_input("下距邊距 (mm)", 25, 1000, 50)
 
 # 使用者參數：錨栓直徑、間距設定
 diameter = selected_data['螺栓直徑 (cm)'] * 10  # 改成 mm
-x_spacing_input = st.sidebar.text_input("X 方向間距（cm）", "15,15,15")
-y_spacing_input = st.sidebar.text_input("Y 方向間距（cm）", "15,15")
+x_spacing_input = st.sidebar.text_input("X 方向間距（mm）", "150,150,150")
+y_spacing_input = st.sidebar.text_input("Y 方向間距（mm）", "150,150")
 
 # 轉換字串為數值陣列
 def parse_spacing(input_str):
@@ -73,8 +72,8 @@ plate_width = sum(x_spacings) + corner_offset_left + corner_offset_right
 plate_height = sum(y_spacings) + corner_offset_top + corner_offset_bottom
 
 # 顯示自動計算的底版大小
-st.sidebar.write(f"自動計算底版寬度：{plate_width:.0f} cm")
-st.sidebar.write(f"自動計算底版高度：{plate_height:.0f} cm")
+st.sidebar.write(f"自動計算底版寬度：{plate_width:.0f} mm")
+st.sidebar.write(f"自動計算底版高度：{plate_height:.0f} mm")
 
 # 畫圖設置
 offset_spacing = 30
@@ -122,7 +121,7 @@ if len(x_coords) > 1:
         x0, x1 = x_coords[j], x_coords[j+1]
         x_mid = (x0 + x1) / 2
         ax.annotate("", xy=(x0, y_spacing_line), xytext=(x1, y_spacing_line), arrowprops=dict(arrowstyle='<->'))
-        ax.text(x_mid, y_spacing_line - label_text_offset, f"{(x1 - x0) / 10:.1f} cm", ha='center', va='top', fontsize=label_fontsize)
+        ax.text(x_mid, y_spacing_line - label_text_offset, f"{x1 - x0:.0f} mm", ha='center', va='top', fontsize=label_fontsize)
 
 # 總距離 X（修正箭頭顯示問題）
 if len(x_coords) > 1:
@@ -135,7 +134,7 @@ if len(x_coords) > 1:
     ax.annotate("", xy=(x1, y_total), xytext=(x0, y_total), arrowprops=dict(arrowstyle='<->', lw=1.5))
 
     # 顯示總距離標註，避免與單段間距標示重疊
-    ax.text((x0 + x1) / 2, y_total - label_text_offset, f"{total_x / 10:.1f} cm", ha='center', va='top', fontsize=9)
+    ax.text((x0 + x1) / 2, y_total - label_text_offset, f"{total_x:.0f} mm", ha='center', va='top', fontsize=9)
 
 # 單段 Y spacing 標註
 if len(y_coords) > 1:
@@ -153,10 +152,12 @@ if len(y_coords) > 1:
     x_total = x_spacing_line + 40
     total_y = y0 - y1
     ax.annotate("", xy=(x_total, y0), xytext=(x_total, y1), arrowprops=dict(arrowstyle='<->'))
-    ax.text(x_spacing_line + label_text_offset, y_mid, f"{(y0 - y1) / 10:.1f} cm", va='center', fontsize=label_fontsize, rotation=90)
+    ax.text(x_total + label_text_offset, (y0 + y1) / 2, f"{total_y:.0f} mm", va='center', rotation=90, fontsize=9)
 
 ax.set_aspect('equal')
 ax.set_xlim(0, plate_width + 100)
 ax.set_ylim(-100, plate_height + 100)
 ax.axis('off')
 st.pyplot(fig)
+
+幫我把上面錨栓相關長度都由mm轉成cm
