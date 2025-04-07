@@ -1,6 +1,7 @@
 
 import streamlit as st
 import matplotlib.pyplot as plt
+import pandas as pd
 
 st.set_page_config(page_title="Anchor Layout (Fixed Spacing + Plate Size)", layout="centered")
 st.title("🔩 錨栓配置圖（自訂 X / Y 間距 + 四個角落距邊 25mm + 自動底版大小）")
