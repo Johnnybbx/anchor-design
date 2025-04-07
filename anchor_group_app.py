@@ -124,14 +124,14 @@ if len(x_coords) > 1:
         ax.annotate("", xy=(x0, y_spacing_line), xytext=(x1, y_spacing_line), arrowprops=dict(arrowstyle='<->'))
         ax.text(x_mid, y_spacing_line - label_text_offset, f"{x1 - x0:.0f} mm", ha='center', va='top', fontsize=label_fontsize)
 
-# 總距離 X
+# 總距離 X（加上 X方向總距離標示）
 if len(x_coords) > 1:
     x0 = x_coords[0]
     x1 = x_coords[-1]
     y_total = y_spacing_line + 40
-    total_x = x0 - x1
-    ax.annotate("", xy=(y_total, x0), xytext=(y_total, x1), arrowprops=dict(arrowstyle='<->'))
-    ax.text(y_total + label_text_offset, (x0 + x1) / 2, f"{total_x:.0f} mm", va='center', rotation=0, fontsize=9)
+    total_x = x1 - x0  # 修正了這裡的運算，之前是錯誤的
+    ax.annotate("", xy=(x0, y_total), xytext=(x1, y_total), arrowprops=dict(arrowstyle='<->'))
+    ax.text((x0 + x1) / 2, y_total - label_text_offset, f"{total_x:.0f} mm", ha='center', va='top', fontsize=9)
 
 # 單段 Y spacing 標註
 if len(y_coords) > 1:
