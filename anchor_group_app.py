@@ -128,7 +128,7 @@ if len(x_coords) > 1:
 if len(x_coords) > 1:
     x0 = x_coords[0]
     x1 = x_coords[-1]
-    y_total = y_spacing_line - 60  # 調整箭頭和標註的垂直位置
+    y_total = y_spacing_line - 40  # 調整箭頭和標註的垂直位置
     total_x = x1 - x0
     
     # 修正箭頭繪製，確保箭頭顯示
