@@ -131,7 +131,7 @@ if len(x_coords) > 1:
     y_total = y_spacing_line + 40
     total_x = x1 - x0
     ax.annotate("", xy=(x0, y_total), xytext=(x1, y_total), arrowprops=dict(arrowstyle='<->'))
-    ax.text((x0 + x1) / 2, y_total - label_text_offset, f"{total_x:.0f} mm", ha='center', va='top', fontsize=9)
+    ax.text((x0 + x1) / 2, y_spacing_line - label_text_offset, f"{total_x:.0f} mm", ha='center', va='top', fontsize=9)
 
 # 單段 Y spacing 標註
 if len(y_coords) > 1:
