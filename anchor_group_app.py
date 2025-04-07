@@ -51,9 +51,14 @@ corner_offset_top *= 10
 corner_offset_right *= 10
 corner_offset_bottom *= 10
 
+# 先取得輸入（單位 cm）
+x_spacing_input = st.sidebar.text_input("X 方向間距（cm）", "15,15,15")
+y_spacing_input = st.sidebar.text_input("Y 方向間距（cm）", "15,15")
+
+# 轉換為 mm 用於計算
+x_spacings = [x * 10 for x in parse_spacing(x_spacing_input)]
+y_spacings = [y * 10 for y in parse_spacing(y_spacing_input)]
 diameter = selected_data['螺栓直徑 (cm)'] * 10
-x_spacings = [s * 10 for s in parse_spacing(x_spacing_input)]
-y_spacings = [s * 10 for s in parse_spacing(y_spacing_input)]
 
 def parse_spacing(input_str):
     try:
