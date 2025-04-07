@@ -124,14 +124,14 @@ if len(x_coords) > 1:
         ax.annotate("", xy=(x0, y_spacing_line), xytext=(x1, y_spacing_line), arrowprops=dict(arrowstyle='<->'))
         ax.text(x_mid, y_spacing_line - label_text_offset, f"{x1 - x0:.0f} mm", ha='center', va='top', fontsize=label_fontsize)
 
-# 總距離 X spacing
+# 總距離 X
 if len(x_coords) > 1:
-    y_spacing_line = y_coords[-1] + offset_spacing
-    for i in range(len(x_coords) - 1):
-        x0, x1 = x_coords[i], x_coords[i+1]
-        x_mid = (x0 + x1) / 2
-        ax.annotate("", xy=(y_spacing_line, x0), xytext=(y_spacing_line, x1), arrowprops=dict(arrowstyle='<->'))
-        ax.text(y_spacing_line + label_text_offset, x_mid, f"{x0 - x1:.0f} mm", va='center', fontsize=label_fontsize, rotation=90)
+    x0 = x_coords[0]
+    x1 = x_coords[-1]
+    y_total = y_spacing_line + 40
+    total_x = x0 - x1
+    ax.annotate("", xy=(y_total, x0), xytext=(y_total, x1), arrowprops=dict(arrowstyle='<->'))
+    ax.text(y_total + label_text_offset, (x0 + x1) / 2, f"{total_x:.0f} mm", va='center', rotation=0, fontsize=9)
 
 # 單段 Y spacing 標註
 if len(y_coords) > 1:
