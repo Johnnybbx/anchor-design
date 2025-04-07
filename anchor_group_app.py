@@ -47,8 +47,8 @@ corner_offset_right = st.sidebar.number_input("右邊距 (cm)", 2.5, 100.0, 5.0)
 corner_offset_bottom = st.sidebar.number_input("下邊距 (cm)", 2.5, 100.0, 5.0)
 
 # 📏 間距輸入（單位 cm）
-x_spacing_input = st.sidebar.text_input("X 方向間距（cm）", "15,15,15")
-y_spacing_input = st.sidebar.text_input("Y 方向間距（cm）", "15,15")
+x_spacing_input = st.sidebar.text_input("X 方向間距（cm）", "15")
+y_spacing_input = st.sidebar.text_input("Y 方向間距（cm）", "15")
 
 # 轉換間距字串為數值
 def parse_spacing(input_str):
