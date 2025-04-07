@@ -130,8 +130,8 @@ if len(x_coords) > 1:
     for i in range(len(x_coords) - 1):
         x0, x1 = x_coords[i], x_coords[i+1]
         x_mid = (x0 + x1) / 2
-        ax.annotate("", xy=(y_spacing_line, y0), xytext=(y_spacing_line, y1), arrowprops=dict(arrowstyle='<->'))
-        ax.text(y_spacing_line + label_text_offset, y_mid, f"{x0 - x1:.0f} mm", va='center', fontsize=label_fontsize, rotation=90)
+        ax.annotate("", xy=(y_spacing_line, x0), xytext=(y_spacing_line, x1), arrowprops=dict(arrowstyle='<->'))
+        ax.text(y_spacing_line + label_text_offset, x_mid, f"{x0 - x1:.0f} mm", va='center', fontsize=label_fontsize, rotation=90)
 
 # 單段 Y spacing 標註
 if len(y_coords) > 1:
