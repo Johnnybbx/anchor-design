@@ -13,8 +13,8 @@ bolt_data = {
     '開裂 kc': [7.1, 7.1, 7.1, 7.1, 7.1, 7.1, 11, 11, 11, 7.1, 7.1, 7.1, 7.1, 7.1, 7.1],
     '非開裂 kc': [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
     'kcp': [1, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2],
-    'uncr (2500psi)': [10000, 10000, 10000, 10000, 10000, 10000, 167.33, 161.71, 155.38, 10000, 155.38, 156.08, 156.08, 137.87, 125.85],
-    'ucr (2500psi)': [10000, 10000, 10000, 10000, 10000, 10000, 89.99, 89.99, 88.57, 10000, 88.57, 90.69, 97.02, 82.96, 82.96],
+    'τuncr (2500psi)': [10000, 10000, 10000, 10000, 10000, 10000, 167.33, 161.71, 155.38, 10000, 155.38, 156.08, 156.08, 137.87, 125.85],
+    'τucr (2500psi)': [10000, 10000, 10000, 10000, 10000, 10000, 89.99, 89.99, 88.57, 10000, 88.57, 90.69, 97.02, 82.96, 82.96],
     'Vsa': [1315, 1947, 2813, 4852, 6554, 815, 1913, 4454, 635, 1913, 2134, 4454, 4454, 913, 1913]
 }
 
@@ -35,11 +35,11 @@ selected_data = df_bolts[df_bolts['型號'] == selected_bolt].iloc[0]
 st.sidebar.subheader(f"選擇的錨栓型號：{selected_bolt}")
 st.sidebar.write(f"螺栓直徑 (cm): {selected_data['螺栓直徑 (cm)']}")
 st.sidebar.write(f"有效埋深 (cm): {selected_data['有效埋深 (cm)']}")
-st.sidebar.write(f"開裂強度 k: {selected_data['開裂強度 k']}")
-st.sidebar.write(f"非開裂強度 k: {selected_data['非開裂強度 k']}")
+st.sidebar.write(f"開裂強度 k: {selected_data['開裂 kc']}")
+st.sidebar.write(f"非開裂強度 k: {selected_data['非開裂 kc']}")
 st.sidebar.write(f"kcp: {selected_data['kcp']}")
-st.sidebar.write(f"uncr (2500psi): {selected_data['uncr (2500psi)']}")
-st.sidebar.write(f"ucr (2500psi): {selected_data['ucr (2500psi)']}")
+st.sidebar.write(f"uncr (2500psi): {selected_data['τuncr (2500psi)']}")
+st.sidebar.write(f"ucr (2500psi): {selected_data['τucr (2500psi)']}")
 st.sidebar.write(f"Vsa: {selected_data['Vsa']}")
 
 # 使用者參數：錨栓直徑、間距設定
