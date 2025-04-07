@@ -2,10 +2,10 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="Anchor Layout (Custom Spacing + Plate Size)", layout="centered")
-st.title("🔩 錨栓配置圖（自訂 X / Y 間距 + 四個角落距邊 25mm + 自動底版大小）")
+st.set_page_config(page_title="Anchor Layout (Custom Spacing)", layout="centered")
+st.title("🔩 錨栓配置圖（自訂 X / Y 間距）")
 
-st.markdown("此版本讓四個角落的錨栓距離底版邊緣 25mm，並根據錨栓位置自動設置底版大小，排版樣式不變，並即時更新圖形。")
+st.markdown("此版本允許自訂 X / Y 方向的錨栓間距（非等距），排版與標註樣式不變。")
 
 # 使用者參數
 st.sidebar.header("⚙️ 錨栓參數設定")
@@ -30,32 +30,26 @@ n_y = len(y_spacings) + 1
 
 st.sidebar.write(f"X 錨栓數量：{n_x}，Y 錨栓數量：{n_y}")
 
-# 預設邊距 25mm
-corner_offset = 25
-st.sidebar.header("📏 底版邊距（四角錨栓距邊 25mm）")
-edge_left = st.sidebar.number_input("左邊距 (mm)", 25, 1000, 50)
-edge_top = st.sidebar.number_input("上邊距 (mm)", 25, 1000, 50)
+st.sidebar.header("🧱 底板設定")
+plate_width = st.sidebar.number_input("底板寬度 (mm)", 100, 3000, 600)
+plate_height = st.sidebar.number_input("底板高度 (mm)", 100, 3000, 600)
 
-# 計算底版大小
-plate_width = sum(x_spacings) + 2 * corner_offset
-plate_height = sum(y_spacings) + 2 * corner_offset
-
-# 顯示自動計算的底版大小
-st.sidebar.write(f"自動計算底版寬度：{plate_width:.0f} mm")
-st.sidebar.write(f"自動計算底版高度：{plate_height:.0f} mm")
+st.sidebar.header("📏 錨栓邊距")
+edge_left = st.sidebar.number_input("左邊距 (mm)", 0, 1000, 50)
+edge_top = st.sidebar.number_input("上邊距 (mm)", 0, 1000, 50)
 
 # 標註距離參數
 offset_spacing = 30
-inter_label_gap = 40  # 單段與總距離的排距
+inter_label_gap = 40
 label_fontsize = 7
 label_text_offset = 10
 
 fig, ax = plt.subplots()
 anchor_radius = diameter / 2
 
-# 座標起點（四角錨栓預設為距邊緣 25mm）
-x_start = corner_offset
-y_start = plate_height - corner_offset
+# 座標起點
+x_start = edge_left
+y_start = plate_height - edge_top
 
 # 計算每個錨栓的座標（非等距）
 x_coords = [x_start]
@@ -82,17 +76,20 @@ if len(x_coords) > 1:
     for j in range(len(x_coords) - 1):
         x0, x1 = x_coords[j], x_coords[j+1]
         x_mid = (x0 + x1) / 2
-        ax.annotate("", xy=(x0, y_spacing_line), xytext=(x1, y_spacing_line), arrowprops=dict(arrowstyle='<->'))
-        ax.text(x_mid, y_spacing_line - label_text_offset, f"{x1 - x0:.0f} mm", ha='center', va='top', fontsize=label_fontsize)
+        ax.annotate("", xy=(x0, y_spacing_line), xytext=(x1, y_spacing_line),
+                    arrowprops=dict(arrowstyle='<->'))
+        ax.text(x_mid, y_spacing_line - label_text_offset,
+                f"{x1 - x0:.0f} mm", ha='center', va='top', fontsize=label_fontsize)
 
 # 總距離 X spacing
 if len(x_coords) > 1:
     x0 = x_coords[0]
     x1 = x_coords[-1]
     y_total = y_spacing_line - inter_label_gap
-    total_x = x1 - x0
-    ax.annotate("", xy=(x0, y_total), xytext=(x1, y_total), arrowprops=dict(arrowstyle='<->'))
-    ax.text((x0 + x1) / 2, y_total - label_text_offset, f"{total_x:.0f} mm", ha='center', va='top', fontsize=9)
+    ax.annotate("", xy=(x0, y_total), xytext=(x1, y_total),
+                arrowprops=dict(arrowstyle='<->'))
+    ax.text((x0 + x1) / 2, y_total - label_text_offset,
+            f"{x1 - x0:.0f} mm", ha='center', va='top', fontsize=9)
 
 # 單段 Y spacing 標註
 if len(y_coords) > 1:
@@ -100,22 +97,24 @@ if len(y_coords) > 1:
     for i in range(len(y_coords) - 1):
         y0, y1 = y_coords[i], y_coords[i+1]
         y_mid = (y0 + y1) / 2
-        ax.annotate("", xy=(x_spacing_line, y0), xytext=(x_spacing_line, y1), arrowprops=dict(arrowstyle='<->'))
-        ax.text(x_spacing_line + label_text_offset, y_mid, f"{y0 - y1:.0f} mm", va='center', fontsize=label_fontsize, rotation=90)
+        ax.annotate("", xy=(x_spacing_line, y0), xytext=(x_spacing_line, y1),
+                    arrowprops=dict(arrowstyle='<->'))
+        ax.text(x_spacing_line + label_text_offset, y_mid,
+                f"{y0 - y1:.0f} mm", va='center', fontsize=label_fontsize, rotation=90)
 
 # 總距離 Y
 if len(y_coords) > 1:
     y0 = y_coords[0]
     y1 = y_coords[-1]
     x_total = x_spacing_line + 40
-    total_y = y0 - y1
     ax.annotate("", xy=(x_total, y0), xytext=(x_total, y1), arrowprops=dict(arrowstyle='<->'))
-    ax.text(x_total + label_text_offset, (y0 + y1) / 2, f"{total_y:.0f} mm", va='center', rotation=90, fontsize=9)
+    ax.text(x_total + label_text_offset, (y0 + y1) / 2,
+            f"{y0 - y1:.0f} mm", va='center', rotation=90, fontsize=9)
 
 ax.set_aspect('equal')
-ax.set_xlim(0, plate_width + 100)
-ax.set_ylim(0, plate_height + 100)
+ax.set_xlim(-30, plate_width + 100)
+ax.set_ylim(-50, plate_height + 100)
 ax.axis('off')
 st.pyplot(fig)
 
-st.caption("※ 四個角落錨栓距邊緣 25mm，底版大小自動計算，排版樣式與既定一致。")
+st.caption("※ 可自由輸入每段間距，系統自動生成座標與標註，排版樣式與既定一致。")
