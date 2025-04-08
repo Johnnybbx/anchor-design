@@ -186,3 +186,24 @@ if uploaded_file is not None:
 
     # 額外說明
     st.success("反力資料已成功匯入，可開始進行錨栓受力分析！")
+    
+# --- 定義形心為原點後，計算 I_x 與 I_y（轉動慣量）
+x_rel = [x - sum(x_coords)/len(x_coords) for x in x_coords]
+y_rel = [y - sum(y_coords)/len(y_coords) for y in y_coords]
+anchor_coords = [(x, y) for y in y_rel for x in x_rel]
+
+I_x = sum((y**2 for x, y in anchor_coords))
+I_y = sum((x**2 for x, y in anchor_coords))
+
+# --- 從反力資料擷取 Fx, Fy, Mx, My（單位: kgf, kgf-cm）
+if 'reaction_df' in locals():
+    fx = float(reaction_df['FX (kgf)'][0])
+    fy = float(reaction_df['FY (kgf)'][0])
+    mx = float(reaction_df['MX (kgf-cm)'][0])
+    my = float(reaction_df['MY (kgf-cm)'][0])
+
+    st.sidebar.subheader("📐 計算結果（反力總和）")
+    st.sidebar.write(f"總剪力 Fx：{fx:.1f} kgf")
+    st.sidebar.write(f"總剪力 Fy：{fy:.1f} kgf")
+    st.sidebar.write(f"總彎矩 Mx：{mx:.1f} kgf-cm")
+    st.sidebar.write(f"總彎矩 My：{my:.1f} kgf-cm")
