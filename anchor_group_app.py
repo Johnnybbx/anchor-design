@@ -147,3 +147,21 @@ ax.set_xlim(0, plate_width + 100)
 ax.set_ylim(-100, plate_height + 100)
 ax.axis('off')
 st.pyplot(fig)
+
+st.sidebar.header("📊 結構反力輸入 (單位：kgf / kgf-cm)")
+uploaded_file = st.sidebar.file_uploader("請上傳含有 FX、FY、MX、MY 的 Excel 檔", type=["xlsx"])
+
+if uploaded_file is not None:
+    reaction_df = pd.read_excel(uploaded_file)
+
+    # 顯示所有欄位與資料
+    st.subheader("📄 匯入反力資料")
+    st.dataframe(reaction_df)
+
+    # 顯示單位提示
+    with st.expander("📎 備註：欄位單位"):
+        st.markdown("- **FX / FY**：kgf")
+        st.markdown("- **MX / MY**：kgf-cm")
+
+    # 額外說明
+    st.success("反力資料已成功匯入，可開始進行錨栓受力分析！")
