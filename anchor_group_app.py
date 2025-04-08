@@ -195,13 +195,6 @@ anchor_coords = [(x, y) for y in y_rel for x in x_rel]
 I_x = sum((y**2 for x, y in anchor_coords))
 I_y = sum((x**2 for x, y in anchor_coords))
 
-# --- 從反力資料擷取 Fx, Fy, Mx, My（單位: kgf, kgf-cm）
-if 'reaction_df' in locals():
-    fx = float(reaction_df['FX (kgf)'][0])
-    fy = float(reaction_df['FY (kgf)'][0])
-    mx = float(reaction_df['MX (kgf-cm)'][0])
-    my = float(reaction_df['MY (kgf-cm)'][0])
-
 # 顯示欄位名稱以確認
 st.write("🔍 匯入的欄位名稱：", reaction_df.columns.tolist())
 
