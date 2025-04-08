@@ -141,6 +141,27 @@ if len(y_coords) > 1:
     ax.annotate("", xy=(x_total, y0), xytext=(x_total, y1), arrowprops=dict(arrowstyle='<->'))
     ax.text(x_total + label_text_offset, (y0 + y1) / 2, f"{total_y/10:.1f} cm", va='center', rotation=90, fontsize=9)
 
+# 👉 將錨栓座標轉換為形心為原點的座標系
+bolt_positions = [(x, y) for y in y_coords for x in x_coords]
+x_vals = [p[0] for p in bolt_positions]
+y_vals = [p[1] for p in bolt_positions]
+x_centroid = sum(x_vals) / len(x_vals)
+y_centroid = sum(y_vals) / len(y_vals)
+
+# ➕ 畫座標軸（紅色為 Y，藍色為 X）
+ax.annotate('', xy=(x_centroid + 50, y_centroid), xytext=(x_centroid, y_centroid),
+            arrowprops=dict(arrowstyle='->', color='blue', lw=2))
+ax.annotate('', xy=(x_centroid, y_centroid + 50), xytext=(x_centroid, y_centroid),
+            arrowprops=dict(arrowstyle='->', color='red', lw=2))
+ax.text(x_centroid + 55, y_centroid - 5, 'x', color='blue', fontsize=12)
+ax.text(x_centroid - 5, y_centroid + 55, 'y', color='red', fontsize=12)
+
+# 🔵 在圖上顯示各錨栓在形心座標下的位置
+for x, y in bolt_positions:
+    x_local = x - x_centroid
+    y_local = y - y_centroid
+    ax.text(x, y + 10, f"({x_local/10:.1f}, {y_local/10:.1f})", fontsize=6, ha='center', color='black')
+    
 # 顯示圖
 ax.set_aspect('equal')
 ax.set_xlim(0, plate_width + 100)
