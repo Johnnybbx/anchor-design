@@ -199,7 +199,7 @@ I_y = sum((x**2 for x, y in anchor_coords))
 st.write("🔍 匯入的欄位名稱：", reaction_df.columns.tolist())
 
 # 假設你的欄位實際名稱是這樣的（請依照你的實際欄位改）
-fx = float(reaction_df.get('FX (kgf)', [0])[0])
-fy = float(reaction_df.get('FY (kgf)', [0])[0])
-mx = float(reaction_df.get('MX (kgf-cm)', [0])[0])
-my = float(reaction_df.get('MY (kgf-cm)', [0])[0])
+fx = float(reaction_df.get('FX', [0])[0])
+fy = float(reaction_df.get('FY', [0])[0])
+mx = float(reaction_df.get('MX', [0])[0])
+my = float(reaction_df.get('MY', [0])[0])
