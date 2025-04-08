@@ -206,7 +206,7 @@ if 'reaction_df' in locals():
 st.write("🔍 匯入的欄位名稱：", reaction_df.columns.tolist())
 
 # 假設你的欄位實際名稱是這樣的（請依照你的實際欄位改）
-fx = float(reaction_df['FX (kgf)'][0])
-fy = float(reaction_df['FY (kgf)'][0])
-mx = float(reaction_df['MX (kgf-cm)'][0])
-my = float(reaction_df['MY (kgf-cm)'][0])
+fx = float(reaction_df.get('FX (kgf)', [0])[0])
+fy = float(reaction_df.get('FY (kgf)', [0])[0])
+mx = float(reaction_df.get('MX (kgf-cm)', [0])[0])
+my = float(reaction_df.get('MY (kgf-cm)', [0])[0])
